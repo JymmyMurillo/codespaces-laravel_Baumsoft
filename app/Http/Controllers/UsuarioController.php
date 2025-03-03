@@ -6,27 +6,40 @@ use Illuminate\Http\Request;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
 {
     public function crear(Request $request)
     {
         try {
-            $request->validate([
-            'correo' => 'required|email|unique:usuarios,correo',
-            'nombres' => 'required',
-            'apellidos' => 'required',
+            $validatedData = $request->validate([
+                'correo' => 'required|email|unique:usuarios,correo',
+                'nombres' => 'required|string',
+                'apellidos' => 'required|string',
             ]);
 
-            $usuario = Usuario::create($request->all());
+            $usuario = Usuario::create($validatedData);
 
             return response()->json([
                 'message' => 'Usuario creado',
                 'usuario' => $usuario
             ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+
         } catch (QueryException $e) {
-             return response()->json([
-                'message' => 'Error al crear el usuario',
+            return response()->json([
+                'message' => 'Error en la base de datos',
+                'error' => $e->getMessage()
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error desconocido',
                 'error' => $e->getMessage()
             ], 500);
         }
