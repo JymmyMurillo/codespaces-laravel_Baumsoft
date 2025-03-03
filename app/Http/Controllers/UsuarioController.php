@@ -68,15 +68,14 @@ class UsuarioController extends Controller
 
         $response = $usuarios->map(function ($usuario) {
             return [
-                'usuario' => [
+
                     'id' => $usuario->id,
                     'correo' => $usuario->correo,
                     'nombres' => $usuario->nombres,
                     'apellidos' => $usuario->apellidos,
                     'created_at' => $usuario->created_at,
                     'updated_at' => $usuario->updated_at,
-                ],
-                'ingresos' => $usuario->ingresos->map(function ($ingreso) {
+                    'ingresos' => $usuario->ingresos->map(function ($ingreso) {
                     return [
                         'id' => $ingreso->id,
                         'fecha_entrada' => $ingreso->fecha_entrada,
@@ -85,6 +84,8 @@ class UsuarioController extends Controller
                         'updated_at' => $ingreso->updated_at,
                     ];
                 }),
+                
+
             ];
         });
 
