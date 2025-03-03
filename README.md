@@ -1,62 +1,365 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Documentación de la API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Configuración del Proyecto
 
-## About Laravel
+### Prerrequisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.x
+- Composer
+- MySQL o MariaDB
+- Laravel 10.x
+- Node.js
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Instalación
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clonar el repositorio:
 
-## Learning Laravel
+   ```bash
+   git clone https://github.com/JymmyMurillo/codespaces-laravel_Baumsoft.git
+   cd codespaces-laravel_Baumsoft
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Instalar dependencias:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Laravel Sponsors
+3. Configurar el entorno:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+   - Copiar el archivo `.env.example` a `.env`
+   - Configurar credenciales de la base de datos en `.env`
 
-### Premium Partners
+4. Generar la clave de aplicación:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+   ```bash
+   php artisan key:generate
+   ```
 
-## Contributing
+5. Ejecutar migraciones:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```bash
+   php artisan migrate
+   ```
 
-## Code of Conduct
+6. Iniciar el servidor de desarrollo:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```bash
+   php artisan serve
+   ```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+# Endpoints de la API
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 1. Crear un Usuario
+
+**Método:** GET
+
+**URL:** `http://localhost:8000/usuarios/crear`
+
+### Parámetros:
+
+- **correo** (string, requerido, único): Correo electrónico del usuario.
+- **nombres** (string, requerido): Nombres del usuario.
+- **apellidos** (string, requerido): Apellidos del usuario.
+
+### Ejemplo de URL:
+
+```
+http://localhost:8000/usuarios/crear?correo=test@example.com&nombres=Juan&apellidos=Perez
+```
+
+### Respuesta exitosa (Código 201):
+
+```json
+{
+    "message": "Usuario creado",
+    "usuario": {
+        "id": 1,
+        "correo": "test@example.com",
+        "nombres": "Juan",
+        "apellidos": "Perez",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:00:00.000000Z"
+    }
+}
+```
+
+### Respuesta con error de validación (Código 422):
+
+```json
+{
+    "message": "Error de validación",
+    "errors": {
+        "correo": ["El correo ya ha sido tomado."]
+    }
+}
+```
+
+### Respuesta con error de servidor (Código 500):
+
+```json
+{
+    "message": "Error al crear el usuario",
+    "error": "SQLSTATE[HY000] [2002] Connection refused"
+}
+```
+---
+
+## 2. Modificar un Usuario
+
+**Método:** GET
+
+**URL:** `http://localhost:8000/usuarios/modificar/{id}`
+
+## Parámetros:
+
+- **id** (entero, requerido): ID del usuario a modificar.
+- **correo** (string, opcional, único): Nuevo correo electrónico.
+- **nombres** (string, opcional): Nuevos nombres.
+- **apellidos** (string, opcional): Nuevos apellidos.
+
+## Ejemplo de URL:
+
+```
+http://localhost:8000/usuarios/modificar/1?correo=nuevo@example.com&nombres=Pedro&apellidos=Gomez
+```
+
+## Respuesta exitosa (Código 200):
+
+```json
+{
+    "message": "Usuario actualizado",
+    "usuario": {
+        "id": 1,
+        "correo": "nuevo@example.com",
+        "nombres": "Pedro",
+        "apellidos": "Gomez",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:30:00.000000Z"
+    }
+}
+```
+
+## Respuesta con error de validación (Código 422):
+
+```json
+{
+    "message": "Error de validación",
+    "errors": {
+        "correo": ["El correo ya ha sido tomado."]
+    }
+}
+```
+
+## Respuesta con error de servidor (Código 500):
+
+```json
+{
+    "message": "Error al modificar el usuario",
+    "error": "SQLSTATE[HY000] [2002] Connection refused"
+}
+```
+
+---
+
+## 3. Eliminar un Usuario
+
+**Método:** GET
+
+**URL:** `http://localhost:8000/usuarios/eliminar/{id}`
+
+## Parámetros:
+
+- **id** (entero, requerido): ID del usuario a eliminar.
+
+## Ejemplo de URL:
+
+```
+http://localhost:8000/usuarios/eliminar/1
+```
+
+## Respuesta exitosa (Código 200):
+
+```json
+{
+    "message": "Usuario eliminado",
+    "usuario": {
+        "id": 1,
+        "correo": "test@example.com",
+        "nombres": "Juan",
+        "apellidos": "Perez",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:00:00.000000Z"
+    }
+}
+```
+
+## Respuesta con error de servidor (Código 500):
+
+```json
+{
+    "message": "Error al eliminar el usuario",
+    "error": "SQLSTATE[HY000] [2002] Connection refused"
+}
+```
+---
+
+# 4. Consultar un Usuario
+
+**Método:** GET
+
+**URL:** `http://localhost:8000/usuarios/consultar/{id}`
+
+## Parámetros:
+
+- **id** (entero, requerido): ID del usuario a consultar.
+
+## Ejemplo de URL:
+
+```
+http://localhost:8000/usuarios/consultar/1
+```
+
+## Respuesta exitosa (Código 200):
+
+```json
+{
+    "message": "Usuario consultado",
+    "usuario": {
+        "id": 1,
+        "correo": "test@example.com",
+        "nombres": "Juan",
+        "apellidos": "Perez",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:00:00.000000Z",
+        "ingresos": [
+            {
+                "id": 1,
+                "fecha_entrada": "2023-10-01T12:00:00.000000Z",
+                "fecha_salida": "2023-10-01T17:00:00.000000Z",
+                "created_at": "2023-10-01T12:00:00.000000Z",
+                "updated_at": "2023-10-01T12:00:00.000000Z"
+            }
+        ]
+    }
+}
+```
+
+## Respuesta con error de recurso no encontrado (Código 404):
+
+```json
+{
+    "message": "Usuario no encontrado",
+    "error": "No query results for model [App\\Models\\Usuario] 999"
+}
+```
+---
+## 5. Crear un Ingreso
+
+**Método:** GET  
+
+**URL:** `http://localhost:8000/ingresos/crear/{usuario_id}`  
+
+### Parámetros:
+- `usuario_id` (entero, requerido): ID del usuario al que pertenece el ingreso.
+
+### Ejemplo de URL:
+```
+http://localhost:8000/ingresos/crear/1
+```
+
+### Respuesta exitosa (Código 201):
+```json
+{
+    "message": "Ingreso creado",
+    "ingreso": {
+        "id": 1,
+        "usuario_id": 1,
+        "fecha_entrada": "2023-10-01T12:00:00.000000Z",
+        "fecha_salida": "2023-10-01T17:00:00.000000Z",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:00:00.000000Z"
+    },
+    "usuario": {
+        "id": 1,
+        "correo": "test@example.com",
+        "nombres": "Juan",
+        "apellidos": "Perez",
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-01T12:00:00.000000Z"
+    }
+}
+```
+
+### Respuesta con error de servidor (Código 500):
+```json
+{
+    "message": "Error al crear el ingreso",
+    "error": "SQLSTATE[HY000] [2002] Connection refused"
+}
+```
+---
+
+## 6. Consultar Todos los Usuarios con Ingresos
+
+**Método:** GET  
+
+**URL:** `http://localhost:8000/usuarios/todos`  
+
+### Respuesta exitosa (Código 200):
+```json
+{
+    "message": "Todos los usuarios con sus ingresos",
+    "data": [
+        {
+            "usuario": {
+                "id": 1,
+                "correo": "test@example.com",
+                "nombres": "Juan",
+                "apellidos": "Perez",
+                "created_at": "2023-10-01T12:00:00.000000Z",
+                "updated_at": "2023-10-01T12:00:00.000000Z"
+            },
+            "ingresos": [
+                {
+                    "id": 1,
+                    "fecha_entrada": "2023-10-01T12:00:00.000000Z",
+                    "fecha_salida": "2023-10-01T17:00:00.000000Z",
+                    "created_at": "2023-10-01T12:00:00.000000Z",
+                    "updated_at": "2023-10-01T12:00:00.000000Z"
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Respuesta con error de servidor (Código 500):
+```json
+{
+    "message": "Error al consultar los usuarios",
+    "error": "SQLSTATE[HY000] [2002] Connection refused"
+}
+```
+---
+
+## Respuestas de Error
+
+- 422: Error de validación
+- 404: No encontrado
+- 500: Error interno del servidor
+
+---
+
+## Notas
+
+- Todos los endpoints utilizan el método `GET` para facilitar las pruebas en Codespaces.
+- Se recomienda usar herramientas como Postman o cURL para probar la API.
+- En producción, es mejor usar los métodos HTTP adecuados (`POST`, `PUT`, `DELETE`) para mejorar la seguridad y cumplir con las buenas prácticas.
+
