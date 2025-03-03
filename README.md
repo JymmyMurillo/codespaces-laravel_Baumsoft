@@ -363,3 +363,24 @@ http://localhost:8000/ingresos/crear/1
 - Se recomienda usar herramientas como Postman o cURL para probar la API.
 - En producción, es mejor usar los métodos HTTP adecuados (`POST`, `PUT`, `DELETE`) para mejorar la seguridad y cumplir con las buenas prácticas.
 
+# Estructura del Proyecto
+```
+codespaces-laravel_Baumsoft/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── UsuarioController.php
+│   │   │   └── IngresoController.php
+│   ├── Models/
+│   │   ├── Usuario.php
+│   │   └── Ingreso.php
+├── database/
+│   ├── migrations/
+│   │   ├── 2023_10_01_000000_create_usuarios_table.php
+│   │   └── 2023_10_01_000001_create_ingresos_table.php
+├── routes/
+│   └── web.php
+├── .env
+└── composer.json
+
+```
