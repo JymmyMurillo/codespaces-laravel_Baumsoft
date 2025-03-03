@@ -50,4 +50,14 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ], 200);
     }
+
+    public function consultar($id)
+    {
+        $usuario = Usuario::with('ingresos')->findOrFail($id);
+
+        return response()->json([
+            'message' => 'Usuario consultado',
+            'usuario' => $usuario
+        ], 200);
+    }
 }
