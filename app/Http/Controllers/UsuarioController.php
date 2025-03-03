@@ -60,4 +60,36 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ], 200);
     }
+
+    public function todos()
+    {
+        $usuarios = Usuario::with('ingresos')->get();
+
+        $response = $usuarios->map(function ($usuario) {
+            return [
+                'usuario' => [
+                    'id' => $usuario->id,
+                    'correo' => $usuario->correo,
+                    'nombres' => $usuario->nombres,
+                    'apellidos' => $usuario->apellidos,
+                    'created_at' => $usuario->created_at,
+                    'updated_at' => $usuario->updated_at,
+                ],
+                'ingresos' => $usuario->ingresos->map(function ($ingreso) {
+                    return [
+                        'id' => $ingreso->id,
+                        'fecha_entrada' => $ingreso->fecha_entrada,
+                        'fecha_salida' => $ingreso->fecha_salida,
+                        'created_at' => $ingreso->created_at,
+                        'updated_at' => $ingreso->updated_at,
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json([
+            'message' => 'Todos los usuarios con sus ingresos',
+            'data' => $response
+        ], 200);
+    }
 }
