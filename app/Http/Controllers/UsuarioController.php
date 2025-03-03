@@ -39,4 +39,15 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ], 200);
     }
+
+    public function eliminar($id)
+    {
+        $usuario = Usuario::findOrFail($id);
+        $usuario->delete();
+
+        return response()->json([
+            'message' => 'Usuario eliminado',
+            'usuario' => $usuario
+        ], 200);
+    }
 }
